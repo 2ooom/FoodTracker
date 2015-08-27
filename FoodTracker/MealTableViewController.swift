@@ -30,6 +30,7 @@ class MealTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.leftBarButtonItem = editButtonItem()
         loadSample()
     }
     
@@ -50,11 +51,43 @@ class MealTableViewController: UITableViewController {
         return cell
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "ShowDetail" {
+            let ctrl = segue.destinationViewController as! MealViewController
+            if let cell = sender as? MealTableViewCell {
+                let indexPath = tableView.indexPathForCell(cell)!
+                let meal = meals[indexPath.row]
+                ctrl.meal = meal;
+            }
+        }
+        else if (segue.identifier == "Add Item"){
+            print("Adding new meal.")
+        }
+    }
+    
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            meals.removeAtIndex(indexPath.row)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        } else {
+            // TODO: Insert
+        }
+    }
+    
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
     @IBAction func unwindToList(sender: UIStoryboardSegue) {
-        let source = sender.sourceViewController as! MealViewController
-        let meal = source.meal!
-        let newIndex = NSIndexPath(forRow: meals.count, inSection: 0)
-        meals.append(meal)
-        tableView.insertRowsAtIndexPaths([newIndex], withRowAnimation: .Bottom)
+        if let source = sender.sourceViewController as? MealViewController, meal = source.meal {
+            if let index = tableView.indexPathForSelectedRow {
+                meals[index.row] = meal
+                tableView.reloadRowsAtIndexPaths([index], withRowAnimation: .None)
+            } else {
+                let newIndex = NSIndexPath(forRow: meals.count, inSection: 0)
+                meals.append(meal)
+                tableView.insertRowsAtIndexPaths([newIndex], withRowAnimation: .Bottom)
+            }
+        }
     }
 }
