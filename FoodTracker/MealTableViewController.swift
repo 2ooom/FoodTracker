@@ -31,7 +31,13 @@ class MealTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = editButtonItem()
-        loadSample()
+        if let savedMeals = loadMeals() {
+            meals += savedMeals
+            print("loaded \(savedMeals.count) saved item(s)")
+        } else {
+            print("no meals saved")
+            loadSample()
+        }
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -68,6 +74,7 @@ class MealTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             meals.removeAtIndex(indexPath.row)
+            //saveMeals()
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         } else {
             // TODO: Insert
@@ -88,6 +95,21 @@ class MealTableViewController: UITableViewController {
                 meals.append(meal)
                 tableView.insertRowsAtIndexPaths([newIndex], withRowAnimation: .Bottom)
             }
+            //saveMeals()
         }
+    }
+    
+    func saveMeals() {
+        let success = NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path!)
+        if !success {
+            print("saving meals failed...")
+        } else {
+            print("saved at \(Meal.ArchiveURL.path!)")
+        }
+    }
+    
+    func loadMeals() -> [Meal]? {
+        return nil
+        //return NSKeyedUnarchiver.unarchiveObjectWithFile(Meal.ArchiveURL.path!) as? [Meal]
     }
 }
