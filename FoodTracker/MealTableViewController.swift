@@ -49,4 +49,12 @@ class MealTableViewController: UITableViewController {
         cell.ratingCtrl.rating = meal.rating
         return cell
     }
+    
+    @IBAction func unwindToList(sender: UIStoryboardSegue) {
+        let source = sender.sourceViewController as! MealViewController
+        let meal = source.meal!
+        let newIndex = NSIndexPath(forRow: meals.count, inSection: 0)
+        meals.append(meal)
+        tableView.insertRowsAtIndexPaths([newIndex], withRowAnimation: .Bottom)
+    }
 }
