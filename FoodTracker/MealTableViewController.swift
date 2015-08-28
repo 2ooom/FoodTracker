@@ -74,7 +74,7 @@ class MealTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             meals.removeAtIndex(indexPath.row)
-            //saveMeals()
+            saveMeals()
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         } else {
             // TODO: Insert
@@ -95,7 +95,7 @@ class MealTableViewController: UITableViewController {
                 meals.append(meal)
                 tableView.insertRowsAtIndexPaths([newIndex], withRowAnimation: .Bottom)
             }
-            //saveMeals()
+            saveMeals()
         }
     }
     
@@ -109,7 +109,6 @@ class MealTableViewController: UITableViewController {
     }
     
     func loadMeals() -> [Meal]? {
-        return nil
-        //return NSKeyedUnarchiver.unarchiveObjectWithFile(Meal.ArchiveURL.path!) as? [Meal]
+        return NSKeyedUnarchiver.unarchiveObjectWithFile(Meal.ArchiveURL.path!) as? [Meal]
     }
 }

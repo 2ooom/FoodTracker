@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Meal  {
+class Meal : NSObject, NSCoding {
     // MARK: Properties
     
     var name:String
@@ -16,15 +16,16 @@ class Meal  {
     var photo:UIImage?
     
     static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+    
     static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("meals")
     
     init?(name:String, rating:Int, photo:UIImage?) {
+        
         self.name = name
         self.rating = rating
         self.photo = photo
         
-        
-        //super.init()
+        super.init()
         
         if name.isEmpty || rating < 0 {
             return nil
@@ -36,7 +37,7 @@ class Meal  {
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(name, forKey: PropertyKeys.nameKey)
         aCoder.encodeObject(photo, forKey: PropertyKeys.photoKey)
-        aCoder.encodeObject(rating, forKey: PropertyKeys.ratingKey)
+        aCoder.encodeInteger(rating, forKey: PropertyKeys.ratingKey)
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
